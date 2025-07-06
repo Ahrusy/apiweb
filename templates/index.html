@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Русские цитаты из API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Мудрые цитаты</h1>
+
+        <div class="quote-box">
+            <blockquote id="quote-text">Загрузка цитаты...</blockquote>
+            <p class="author" id="quote-author"></p>
+            <div class="controls">
+                <button id="new-quote">Новая цитата</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('new-quote').addEventListener('click', loadQuote);
+
+        function loadQuote() {
+            document.getElementById('quote-text').textContent = 'Загрузка...';
+            document.getElementById('quote-author').textContent = '';
+
+            fetch('/get-quote')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('quote-text').textContent = `"${data.quote}"`;
+                    document.getElementById('quote-author').textContent = `— ${data.author}`;
+                })
+                .catch(error => {
+                    document.getElementById('quote-text').textContent = 'Ошибка загрузки';
+                    document.getElementById('quote-author').textContent = '— Попробуйте позже';
+                });
+        }
+
+        // Загружаем первую цитату при старте
+        loadQuote();
+    </script>
+</body>
+</html>
